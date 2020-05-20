@@ -89,10 +89,10 @@ void HCTree::encode(byte symbol, ostream& out) const {
     while(bottomNode->p != nullptr){
         HCNode* parentNode = bottomNode->p;
         if(parentNode -> c0 == bottomNode){
-            result = "0" + result;
+            result = result + "0";
         }
         else if(parentNode -> c1 == bottomNode){
-            result = "1" + result;
+            result = result + "1";
         }
         bottomNode = bottomNode->p;
     }
