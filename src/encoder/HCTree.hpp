@@ -17,7 +17,10 @@ class HCTree {
 
   public:
     /* TODO: Initializes a new empty HCTree.*/
-    HCTree() {}
+    HCTree() {
+      root = nullptr;
+      //leaves = nullptr;
+    }
 
     ~HCTree();
 

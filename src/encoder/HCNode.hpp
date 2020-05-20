@@ -36,6 +36,24 @@ ostream& operator<<(ostream& stm, const HCNode& n) {
  */
 struct HCNodePtrComp {
     /* TODO */
-    bool operator()(HCNode*& lhs, HCNode*& rhs) const { return false; }
+    bool operator()(HCNode*& lhs, HCNode*& rhs) const { 
+        if(lhs->count > rhs->count){
+            return true;
+        }
+        else if(lhs->count < rhs->count){
+            return false;
+        }
+        else if(lhs->count == rhs->count){
+            if(lhs->symbol > rhs->symbol){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+        else{
+            return false;
+        }
+    }
 };
 #endif  // HCNODE_HPP

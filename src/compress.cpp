@@ -13,7 +13,42 @@
 
 /* TODO: add pseudo compression with ascii encoding and naive header
  * (checkpoint) */
-void pseudoCompression(const string& inFileName, const string& outFileName) {}
+void pseudoCompression(const string& inFileName, const string& outFileName) {
+    ifstream myfile;
+    ofstream myOutputFile;
+    char inputArray;
+    myfile.open (inFileName, ios::binary);
+    vector <unsigned int> freqs;
+
+    while(myfile.get(inputArray)){
+        freqs[inputArray]++;
+    }
+    HCTree newTree;
+    newTree.build(freqs);
+    myOutputFile.open(outFileName);
+
+    for(int i = 0; i < 256; i++){
+        myOutputFile << freqs[i] << endl;
+    }
+    myfile.close();
+    myfile.open(inFileName, ios::binary);
+
+    while(myfile.get(inputArray)){
+        newTree.encode(inputArray, myOutputFile);
+    }
+    myfile.close();
+    myOutputFile.close();
+
+    //array should be the vector for the freqs
+    // go thoruhg file again, call encode to each character using the tree built before
+
+
+
+    //decompress
+     //from 0 to 256 read inFIlename, fill array according to the header
+    //pass thisarray tree.build()
+    // while loop to call decode on each character, use the tree
+}
 
 /* TODO: True compression with bitwise i/o and small header (final) */
 void trueCompression(const string& inFileName, const string& outFileName) {}

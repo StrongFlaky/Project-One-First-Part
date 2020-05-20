@@ -1,7 +1,23 @@
 #include "HCTree.hpp"
-
+#include <vector>
+#include <iostream>
+#include <string>
+#include <string.h>
+void deleteHelperMethod(HCNode* node){
+    if(node->c0 != nullptr){
+        deleteHelperMethod(node->c0);
+    }
+    else if(node->c1 != nullptr){
+        deleteHelperMethod(node->c1);
+    }
+    delete node;
+}
 /* TODO: Delete all objects on the heap to avoid memory leaks. */
-HCTree::~HCTree() {}
+HCTree::~HCTree() {
+    deleteHelperMethod(root);
+}
+
+
 
 /**
  * TODO: Build the HCTree from the given frequency vector. You can assume the
@@ -21,7 +37,27 @@ HCTree::~HCTree() {}
  * node will be the ‘c0’ child of the new parent HCNode.
  *    3. The symbol of any parent node should be taken from its 'c0' child.
  */
-void HCTree::build(const vector<unsigned int>& freqs) {}
+void HCTree::build(const vector<unsigned int>& freqs) {
+    priority_queue<HCNode*, std::vector<HCNode*>, HCNodePtrComp>list;
+    for(int i = 0; i <= 255; i++){
+        if(freqs[i] != 0){
+            HCNode* node = new HCNode(freqs[i], i, 0, 0, 0);
+            list.push(node);
+            leaves.push_back(node);
+        }
+    }
+    while(list.size() >= 2){
+        HCNode* childFirst = list.top();
+        list.pop();
+        HCNode* childSecond = list.top();
+        list.pop();
+        HCNode* parent = new HCNode(childFirst->count + childSecond->count, childFirst->symbol, childFirst, childSecond, 0);
+        childFirst->p = parent;
+        childSecond->p = parent;
+        list.push(parent);
+    }
+    root = list.top();
+}
 
 /**
  * TODO: Write the encoding bits of the given symbol to the ostream. You should
@@ -41,7 +77,29 @@ void HCTree::build(const vector<unsigned int>& freqs) {}
  * efficient encoding. For this function to work, build() must have been called
  * beforehand to create the HCTree.
  */
-void HCTree::encode(byte symbol, ostream& out) const {}
+void HCTree::encode(byte symbol, ostream& out) const {
+    string result = "";
+    HCNode* bottomNode;
+    for(int i = 0; i < leaves.size(); i++){
+        if(leaves[i]->symbol == symbol){
+            bottomNode = leaves[i];
+        }
+    }
+
+    while(bottomNode->p != nullptr){
+        HCNode* parentNode = bottomNode->p;
+        if(parentNode -> c0 == bottomNode){
+            result = "0" + result;
+        }
+        else if(parentNode -> c1 == bottomNode){
+            result = "1" + result;
+        }
+        bottomNode = bottomNode->p;
+    }
+
+
+    out << result;
+}
 
 /**
  * TODO: Decode the sequence of bits (represented as a char of either '0' or
@@ -55,4 +113,21 @@ void HCTree::encode(byte symbol, ostream& out) const {}
  * from istream to return the coded symbol. For this function to work, build()
  * must have been called beforehand to create the HCTree.
  */
-byte HCTree::decode(istream& in) const { return ' '; }
+byte HCTree::decode(istream& in) const { 
+    
+    HCNode* formalNode = root;
+    char decodeC;
+    if(root->c0 == nullptr){
+        return root->symbol;
+    }
+    while(formalNode->c0 != nullptr || formalNode->c1 != nullptr){
+        in.get(decodeC);
+        if(decodeC == '0'){
+            formalNode = formalNode->c0;
+        }
+        else{
+            formalNode = formalNode->c1;
+        }
+    }
+    return formalNode->symbol;
+}
