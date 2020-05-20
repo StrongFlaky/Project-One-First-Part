@@ -23,8 +23,9 @@ void pseudoDecompression(const string& inFileName, const string& outFileName) {
     myfile.open (inFileName, ios::binary);
     vector <unsigned int> freqs;
 
-    for(int i = 0; i < 256; i++){
-        freqs[i] = myfile.get();
+   for(int i = 0; i <= 256; i++){
+   
+        freqs.push_back(myfile.get());
     }
     HCTree newTree;
     newTree.build(freqs);
