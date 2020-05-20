@@ -24,7 +24,7 @@ void pseudoCompression(const string& inFileName, const string& outFileName) {
     }
 
     while(myfile.get(inputArray)){
-        freqs[(byte)inputArray]++;
+        freqs[inputArray]++;
     }
     HCTree newTree;
     newTree.build(freqs);
